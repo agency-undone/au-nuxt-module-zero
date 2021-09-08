@@ -1,0 +1,27 @@
+{
+  "name": "au-nuxt-module-zero",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/agency-undone/au-nuxt-module-zero/#readme",
+  "bugs": "https://github.com/agency-undone/au-nuxt-module-zero/issues",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Agency Undone",
+    "email": "hello@agencyundone.com"
+  },
+  "contributors": [
+    {
+      "name": "Nauras Jabari",
+      "url": "https://github.com/timelytree"
+    }
+  ],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agency-undone/au-nuxt-module-zero"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.17.6"
+  }
+}
