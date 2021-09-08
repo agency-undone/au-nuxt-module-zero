@@ -52,13 +52,13 @@ export default {
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
 .copy-text-button {
-  @include font12;
   line-height: 1;
   font-weight: 500;
+  font-size: 0.75rem;
   text-transform: uppercase;
   color: white;
   border-radius: 0.125rem;
-  background-color: $mineShaft;
+  background-color: black;
   padding: 0.375rem 0.375rem 0.3125rem 0.375rem;
   margin-left: 0.75rem;
   white-space: nowrap;
@@ -66,7 +66,7 @@ export default {
   &:hover {
     transition: 250ms ease-in;
     background-color: white;
-    color: $mineShaft;
+    color: black;
   }
   &.copied {
     background-color: green;

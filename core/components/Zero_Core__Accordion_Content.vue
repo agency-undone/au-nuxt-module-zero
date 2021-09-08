@@ -7,6 +7,9 @@
 </template>
 
 <script>
+// ===================================================================== Imports
+import Throttle from 'lodash/throttle'
+
 // ====================================================================== Export
 export default {
   name: 'AccordionContent',
@@ -22,7 +25,7 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.content = this.$slots.default[0].elm
-      this.resize = this.$throttle(() => {
+      this.resize = Throttle(() => {
         if (this.height !== '0px') {
           this.height = this.content.clientHeight + 'px'
         }

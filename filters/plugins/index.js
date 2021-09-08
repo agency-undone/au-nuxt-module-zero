@@ -1,29 +1,31 @@
 /*
  *
- * 🔌 [Plugin | Pagination] Pagination
+ * 🔌 [Plugin | Filters] Filters
  *
  */
 
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
 // ///////////////////////////////////////////////////////////////////// General
-import Vue from 'vue'
-// import Store from '@/modules/zero/pagination/Store'
+<% options.forEach(({ name, path }) => { %>import <%= name %> from '<%= path %>'
+<% }) %>
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 // ///////////////////////////////////////////////////////// registerGlobalStore
-const registerStore = (App, next) => {
-  App.store.registerModule('pagination', Object.assign({
-    namespaced: true
-  }))
+const registerStore = (store, next) => {
+  <% options.forEach(({ name, content }) => { %>
+    store.registerModule('<%= name %>', Object.assign({
+      namespaced: true
+    }, <%= name %>))
+  <% }) %>
   if (next) { return next() }
 }
 
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
-export default ({ app }, inject) => {
-  registerStore(app, () => {
-    console.log(`🔌 [Plugin | Pagination] Pagination`)
+export default ({ store }) => {
+  registerStore(store, () => {
+    console.log(`🔌 [Plugin | Filters] Filters`)
   })
 }

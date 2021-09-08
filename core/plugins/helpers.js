@@ -101,37 +101,6 @@ const ParseURL = (url) => {
   return urlBreakdown
 }
 
-// //////////////////////////////////////////////////////// Throttle From Lodash
-const Throttle = (func, wait, options) => {
-  let context
-  let args
-  let result
-  let timeout = null
-  let previous = 0
-  if (!options) { options = {} }
-  const later = function () {
-    previous = options.leading === false ? 0 : Date.now()
-    timeout = null
-    result = func.apply(context, args)
-    if (!timeout) { context = args = null }
-  }
-  return function () {
-    const now = Date.now()
-    if (!previous && options.leading === false) { previous = now }
-    const remaining = wait - (now - previous)
-    context = this
-    args = arguments
-    if (remaining <= 0 || remaining > wait) {
-      if (timeout) { clearTimeout(timeout); timeout = null }
-      previous = now
-      result = func.apply(context, args)
-      if (!timeout) { context = args = null }
-    } else if (!timeout && options.trailing !== false) {
-      timeout = setTimeout(later, remaining)
-    } return result
-  }
-}
-
 // /////////////////////////////////////////// Check if Element contains a class
 const HasClass = (element, className) => {
   if (element.classList) { return element.classList.contains(className) }
@@ -249,7 +218,7 @@ const FormatBytes = (bytes, format = 'string') => {
 
 // ///////////////////////////////////////////////// Get SEO and Open Graph data
 // ----------------------------- Return global SEO if no identifier is specified
-const GetSeo = (identifier = 'general') => {
+const GetSeo = (store) => (identifier = 'general') => {
   const siteContent = store.getters['global/siteContent']
   let data = siteContent[identifier]
   if (!data) { data = siteContent.general }
@@ -337,13 +306,12 @@ const AddTextToClipboard = (text) => {
 
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
-export default ({}, inject) => {
+export default ({ store }, inject) => {
   inject('OmitDeep', OmitDeep)
   inject('GetCookie', GetCookie)
   inject('CompileQueryString', CompileQueryString)
   inject('Slugify', Slugify)
   inject('ParseURL', ParseURL)
-  inject('Throttle', Throttle)
   inject('HasClass', HasClass)
   inject('GetiOSversion', GetiOSversion)
   inject('StaggeredAddClass', StaggeredAddClass)
@@ -353,7 +321,7 @@ export default ({}, inject) => {
   inject('GetDocHeight', GetDocHeight)
   inject('Capitalize', Capitalize)
   inject('FormatBytes', FormatBytes)
-  inject('GetSeo', GetSeo)
+  inject('GetSeo', GetSeo(store))
   inject('ShuffleArray', ShuffleArray)
   inject('GetRandomInteger', GetRandomInteger)
   inject('TruncateString', TruncateString)

@@ -8,7 +8,7 @@
     :disabled="disabled"
     @click="clickHandler">
 
-    <LoaderTripleDot :class="{ show: loading }" />
+    <Zero_Core__Loader_TripleDot :class="{ show: loading }" />
 
     <div :class="['button-content', { hide: loading }]">
 
@@ -33,8 +33,6 @@
 // ===================================================================== Imports
 import { mapGetters, mapActions } from 'vuex'
 
-import LoaderTripleDot from '@/modules/zero/core/Components/Spinners/TripleDot'
-
 // ===================================================================== Functions
 const checkSlots = (instance) => {
   const slots = instance.$slots
@@ -45,10 +43,6 @@ const checkSlots = (instance) => {
 // ====================================================================== Export
 export default {
   name: 'Button',
-
-  components: {
-    LoaderTripleDot
-  },
 
   props: {
     type: { // A, B, C, D

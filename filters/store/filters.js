@@ -41,9 +41,9 @@ const getters = {
   routeQuery: state => state.routeQuery,
   totalPages: state => state.totalPages,
   displayOptions: state => state.displayOptions,
-  taxonomyLabels: (state) => {
+  taxonomyLabels: (state, getters, rootState, rootGetters) => {
     const obj = {}
-    const taxonomy = this.getters['global/siteContent'].taxonomy
+    const taxonomy = rootGetters['global/siteContent'].taxonomy
     taxonomy.categories.forEach((item) => {
       const tags = item.tags
       for (let i = 0; i < tags.length; i++) {
@@ -52,9 +52,9 @@ const getters = {
     })
     return obj
   },
-  categoryLookUp: (state) => {
+  categoryLookUp: (state, getters, rootState, rootGetters) => {
     const obj = {}
-    const taxonomy = this.getters['global/siteContent'].taxonomy
+    const taxonomy = rootGetters['global/siteContent'].taxonomy
     taxonomy.categories.forEach((item) => {
       const tagSlugs = []
       for (let i = 0; i < item.tags.length; i++) {

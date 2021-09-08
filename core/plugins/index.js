@@ -6,26 +6,28 @@
 
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
-// ///////////////////////////////////////////////////////////////////// General
-import Store from '@/modules/zero/core/Store'
+<% options.forEach(({ name, path }) => { %>import <%= name %> from '<%= path %>'
+<% }) %>
 
 // This resolves to .nuxt/middleware.js
-import NuxtMiddleware from '../middleware'
+import NuxtMiddleware from '../../middleware'
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
-// ///////////////////////////////////////////////////////// registerGlobalStore
-const registerGlobalStore = (App, next) => {
-  App.store.registerModule('core', Object.assign({
-    namespaced: true
-  }, Store))
+// /////////////////////////////////////////////////////////////// registerStore
+const registerStore = (store, next) => {
+  <% options.forEach(({ name, content }) => { %>
+    store.registerModule('<%= name %>', Object.assign({
+      namespaced: true
+    }, <%= name %>))
+  <% }) %>
   if (next) { return next() }
 }
 
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
-export default ({ app }, inject) => {
-  registerGlobalStore(app, () => {
+export default ({ store }) => {
+  registerStore(store, () => {
     console.log(`🔌 [Plugin | Core] Core`)
   })
 }

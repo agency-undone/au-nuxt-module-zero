@@ -2,7 +2,7 @@
   <div v-if="messages" class="toaster">
 
     <template v-for="toast in toasts">
-      <Toast
+      <Zero_Core__Toast
         v-if="toast"
         :key="toast.id"
         :toast="toast" />
@@ -16,15 +16,9 @@
 import { mapGetters } from 'vuex'
 import Cookie from 'cookie'
 
-import Toast from '@/modules/zero/core/Components/Toast'
-
 // ====================================================================== Export
 export default {
   name: 'Toaster',
-
-  components: {
-    Toast
-  },
 
   computed: {
     ...mapGetters({
