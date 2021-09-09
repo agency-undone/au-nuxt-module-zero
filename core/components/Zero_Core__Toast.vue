@@ -79,7 +79,6 @@ $toastError: red;
 
 // ///////////////////////////////////////////////////////////////////// General
 .toast {
-  @include shadow1;
   width: 30rem;
   min-height: 3rem;
   color: black;

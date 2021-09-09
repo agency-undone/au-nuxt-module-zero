@@ -8,9 +8,7 @@
 
 <script>
 // ===================================================================== Imports
-import { mapActions } from 'vuex'
-
-import Settings from '@/content/data/settings.json'
+import { mapGetters, mapActions } from 'vuex'
 
 // =================================================================== Functions
 const projectInclusion = (instance, selection, projectTags) => {
@@ -48,8 +46,14 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      siteContent: 'global/siteContent'
+    }),
+    settings () {
+      return this.siteContent.settings
+    },
     match () {
-      return Settings.behavior.tagMatchType
+      return this.settings.behavior.tagMatchType
     },
     filtered () {
       let collection = []
