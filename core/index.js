@@ -25,6 +25,10 @@ const plugins = [
     filename: 'au-nuxt-module-zero/core/helpers.js'
   },
   {
+    src: Path.resolve(__dirname, 'plugins/seo.js'),
+    filename: 'au-nuxt-module-zero/core/seo.js'
+  },
+  {
     src: Path.resolve(__dirname, 'plugins/toaster.js'),
     filename: 'au-nuxt-module-zero/core/toaster.js'
   },

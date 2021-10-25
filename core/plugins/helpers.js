@@ -216,24 +216,6 @@ const FormatBytes = (bytes, format = 'string') => {
   return { value: split[0], unit: split[1] }
 }
 
-// ///////////////////////////////////////////////// Get SEO and Open Graph data
-// ----------------------------- Return global SEO if no identifier is specified
-const GetSeo = (store) => (identifier = 'general') => {
-  const siteContent = store.getters['global/siteContent']
-  let data = siteContent[identifier]
-  if (!data) { data = siteContent.general }
-  const seo = data.seo
-  const og = data.og
-  return {
-    title: seo.title,
-    description: seo.description,
-    og_site_name: og.site_name,
-    og_url: og.url,
-    og_type: og.type,
-    og_image: og.image
-  }
-}
-
 // //////////////////////////////////////////////////////////// Shuffle an Array
 // ----------------------------------------- https://stackoverflow.com/a/2450976
 const ShuffleArray = (arr) => {
@@ -321,7 +303,6 @@ export default ({ store }, inject) => {
   inject('GetDocHeight', GetDocHeight)
   inject('Capitalize', Capitalize)
   inject('FormatBytes', FormatBytes)
-  inject('GetSeo', GetSeo(store))
   inject('ShuffleArray', ShuffleArray)
   inject('GetRandomInteger', GetRandomInteger)
   inject('TruncateString', TruncateString)
