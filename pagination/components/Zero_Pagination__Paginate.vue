@@ -1,7 +1,7 @@
 <template>
   <component :is="rootNode">
 
-    <slot :paginated="paginated" />
+    <slot :paginated="paginated" :paginated-count="paginatedCount" />
 
   </component>
 </template>
@@ -50,6 +50,11 @@ export default {
       let collection = this.collection.slice(this.start, this.end)
       if (collection.length === 0) { collection = false }
       return collection
+    },
+    paginatedCount () {
+      const paginated = this.paginated
+      if (paginated) { return paginated.length }
+      return 0
     }
   },
 
