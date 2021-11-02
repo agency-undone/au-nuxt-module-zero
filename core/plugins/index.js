@@ -6,20 +6,28 @@
 
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
-<% options.forEach(({ name, path }) => { %>import <%= name %> from '<%= path %>'
+<% options.stores.forEach(({ name, path }) => { %>import <%= name %> from '<%= path %>'
 <% }) %>
 
-// This resolves to .nuxt/middleware.js
+// This resolves to <app_root>/.nuxt/middleware.js
 import NuxtMiddleware from '../../middleware'
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 // /////////////////////////////////////////////////////////////// registerStore
 const registerStore = (store, next) => {
-  <% options.forEach(({ name, content }) => { %>
+  <% options.stores.forEach(({ name }) => { %>
     store.registerModule('<%= name %>', Object.assign({
       namespaced: true
     }, <%= name %>))
+  <% }) %>
+  if (next) { return next() }
+}
+
+// ////////////////////////////////////////////////////////// registerMiddleware
+const registerMiddleware = (next) => {
+  <% options.middlewares.forEach(({ key, middleware }) => { %>
+    NuxtMiddleware['<%= key %>'] = <%= middleware.default %>
   <% }) %>
   if (next) { return next() }
 }
@@ -28,6 +36,8 @@ const registerStore = (store, next) => {
 // -----------------------------------------------------------------------------
 export default ({ store }) => {
   registerStore(store, () => {
-    console.log(`🔌 [Plugin | Core] Core`)
+    registerMiddleware(() => {
+      console.log(`🔌 [Plugin | Core] Core`)
+    })
   })
 }

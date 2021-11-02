@@ -64,6 +64,11 @@ const plugins = [
   }
 ]
 
+// ////////////////////////////////////////////////////////////////// Middleware
+const middlewares = [
+  'redirector'
+]
+
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 // /////////////////////////////////////////////////////////// compileComponents
@@ -100,16 +105,36 @@ const compileStore = (instance) => {
     const contentDir = instance.options.rootDir
     plugins.forEach((plugin) => {
       if (plugin.filename === 'au-nuxt-module-zero/core/index.js') {
-        plugin.options = []
+        plugin.options = {
+          stores: []
+        }
         const storePath = Path.resolve(__dirname, 'store')
         const stores = Fs.readdirSync(storePath).filter(store => store !== '.DS_Store')
         stores.forEach((store) => {
           const path = Path.resolve(storePath, store)
-          plugin.options.push({
+          plugin.options.stores.push({
             name: camelize(store.split('.')[0]),
-            path,
-            content: Fs.readFileSync(path) + ''
+            path
           })
+        })
+      }
+    })
+    next()
+  })
+}
+
+// ////////////////////////////////////////////////////////// registerMiddleware
+const registerMiddleware = (instance, next) => {
+  return new Promise((next) => {
+    plugins.forEach((plugin) => {
+      if (plugin.filename === 'au-nuxt-module-zero/core/index.js') {
+        plugin.options.middlewares = []
+        middlewares.forEach((key) => {
+          import(Path.resolve(__dirname, 'middleware', `${key}.js`))
+            .then((middleware) => {
+              instance.options.router.middleware.push(key)
+              plugin.options.middlewares.push({ key, middleware })
+            })
         })
       }
     })
@@ -143,6 +168,7 @@ export default async function (instance) {
   if (instance.options.zero.core.include) {
     await compileComponents(instance)
     await compileStore(instance)
+    await registerMiddleware(instance)
     registerPlugins(instance, () => {
       runHttps(instance, () => {
         console.log(`📦 [Module] Core`)
