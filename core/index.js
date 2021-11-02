@@ -142,6 +142,20 @@ const registerMiddleware = (instance, next) => {
   })
 }
 
+// ////////////////////////////////////////////////////////////// registerRoutes
+const registerRoutes = (instance) => {
+  return new Promise((next) => {
+    const redirects = instance.options.publicRuntimeConfig.redirects
+    // Add redirects to generate routes -> for static sites
+    if (redirects && redirects.length > 0) {
+      instance.options.generate.routes = () => {
+        return redirects.map(redirect => ({ route: redirect.from }))
+      }
+    }
+    next()
+  })
+}
+
 // ///////////////////////////////////////////////////////////// registerPlugins
 const registerPlugins = (instance, next) => {
   plugins.forEach((plugin) => {
@@ -169,6 +183,7 @@ export default async function (instance) {
     await compileComponents(instance)
     await compileStore(instance)
     await registerMiddleware(instance)
+    await registerRoutes(instance)
     registerPlugins(instance, () => {
       runHttps(instance, () => {
         console.log(`📦 [Module] Core`)
