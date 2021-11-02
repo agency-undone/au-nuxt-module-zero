@@ -1,6 +1,6 @@
 {
   "name": "au-nuxt-module-zero",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Nuxt module that contains a variety of boilerplate components and functions",
   "homepage": "https://github.com/agency-undone/au-nuxt-module-zero/#readme",
   "bugs": "https://github.com/agency-undone/au-nuxt-module-zero/issues",
@@ -21,6 +21,7 @@
     "url": "https://github.com/agency-undone/au-nuxt-module-zero"
   },
   "dependencies": {
+    "@nuxtjs/sitemap": "^2.4.0",
     "cookie": "^0.4.1",
     "lodash": "^4.17.21",
     "nuxt-hammer": "^2.1.3",
