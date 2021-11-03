@@ -146,10 +146,19 @@ const registerMiddleware = (instance, next) => {
 const registerRoutes = (instance) => {
   return new Promise((next) => {
     const redirects = instance.options.publicRuntimeConfig.redirects
+    const sitemap = instance.options.sitemap
     // Add redirects to generate routes -> for static sites
     if (redirects && redirects.length > 0) {
       instance.options.generate.routes = () => {
         return redirects.map(redirect => ({ route: redirect.from }))
+      }
+      if (sitemap) {
+        const exclude = redirects.map(redirect => (redirect.from))
+        if (sitemap.exclude && Array.isArray(sitemap.exclude)) {
+          sitemap.exclude = [...new Set(sitemap.exclude.concat(exclude))]
+        } else {
+          sitemap.exclude = exclude
+        }
       }
     }
     next()
