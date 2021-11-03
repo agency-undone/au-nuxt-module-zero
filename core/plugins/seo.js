@@ -19,6 +19,7 @@ const GetSeo = store => (identifier = 'general') => {
   return {
     title: seo.title,
     description: seo.description,
+    structured_data: seo.structured_data,
     og_site_name: og.site_name,
     og_url: og.url,
     og_type: og.type,
@@ -35,13 +36,14 @@ const CompileSeo = config => (seo) => {
   const description = seo.description
   const image = siteUrl + seo.og_image
   const url = seo.og_url
+  const structured_data = seo.structured_data || {}
   const structuredData = {
     '@context': 'https://schema.org',
-    '@type': 'WebSite',
+    '@type': structured_data['@type'] || 'WebSite',
     name: title,
     abstract: description,
     mainEntity: {
-      '@type': 'WebSite',
+      '@type': structured_data['@type'] || 'WebSite',
       name: siteName,
       url: siteUrl
     },
