@@ -2,7 +2,7 @@
   <div class="anchor-container" ref="parent">
     <div
       :class="['floating-content', { 'info-fixed': sticky }]"
-      :style="`width: ${width}; transform: ${transform};`">
+      :style="{ width, transform }">
 
       <slot :jump="jumpToSection"></slot>
 
