@@ -2,7 +2,7 @@
   <div class="anchor-container" ref="parent">
     <div
       :class="['floating-content', { 'info-fixed': sticky }]"
-      :style="`transform: ${transform}`">
+      :style="`width: ${width}; transform: ${transform};`">
 
       <slot :jump="jumpToSection"></slot>
 
@@ -14,27 +14,32 @@
 // =================================================================== Functions
 const stickyElementInViewport = (instance) => {
   const anchorElement = instance.$refs.parent
-  const coords = getElementDocumentCoords(anchorElement)
-  const anchorTop = coords.top
-  const anchorLeft = coords.left
-  const threshold = window.pageYOffset + instance.thresholdoffset
-
+  const anchor = getElementDocumentCoords(anchorElement)
+  const anchorWidth = `${Math.round(anchor.width)}px`
   const cutoffElement = document.getElementById(instance.cutoffid)
-  const cutoffTop = getElementDocumentCoords(cutoffElement).top
+  const cutoff = getElementDocumentCoords(cutoffElement)
 
-  if (anchorTop < threshold && cutoffTop > threshold) {
+  const thresholdTop = window.pageYOffset + instance.thresholdoffset
+  const thresholdBottom = cutoff.top - instance.bottomoffset
+
+  if (anchor.top < thresholdTop && thresholdBottom > thresholdTop) {
     if (!instance.sticky) {
       instance.sticky = true
     }
-    instance.transform = `translate(${anchorLeft}px, ${instance.thresholdoffset}px)` // outside of if statement for resize
-  } else if (cutoffTop < threshold) {
+    if (instance.width !== anchorWidth) {
+      instance.width = anchorWidth
+    }
+    instance.transform = `translate(${anchor.left}px, ${instance.thresholdoffset}px)` // outside of if statement for resize
+  } else if (thresholdBottom < thresholdTop) {
     if (instance.sticky) {
       instance.sticky = false
-      instance.transform = `translate(0px, ${cutoffTop - anchorTop}px)`
+      instance.width = 'inherit'
+      instance.transform = `translate(0px, ${thresholdBottom - anchor.top}px)`
     }
   } else {
     if (instance.sticky) {
       instance.sticky = false
+      instance.width = 'inherit'
       instance.transform = 'translate(0px, 0px)'
     }
   }
@@ -55,7 +60,7 @@ const getElementDocumentCoords = (elem) => {
   const top = box.top + scrollTop - clientTop
   const left = box.left + scrollLeft - clientLeft
 
-  return { top: Math.round(top), left: Math.round(left) }
+  return { top: Math.round(top), left: Math.round(left), width: box.width }
 }
 
 // ====================================================================== Export
@@ -71,13 +76,19 @@ export default {
     cutoffid: {
       type: String,
       required: false
+    },
+    bottomoffset: {
+      type: Number,
+      required: false,
+      default: 120
     }
   },
 
   data () {
     return {
       sticky: false,
-      transform: 'translate(0px, 0px)'
+      transform: 'translate(0px, 0px)',
+      width: 'inherit'
     }
   },
 
@@ -107,11 +118,14 @@ export default {
 .anchor-container {
   position: relative;
   z-index: 10000;
+  width: 100%;
 }
 
 .floating-content {
   position: absolute;
   top: 0;
+  left: 0;
+  width: inherit;
   z-index: 10000;
   &.info-fixed {
     position: fixed;
