@@ -11,6 +11,9 @@
 </template>
 
 <script>
+// ===================================================================== Imports
+import Throttle from 'lodash/throttle'
+
 // =================================================================== Functions
 const stickyElementInViewport = (instance) => {
   const anchorElement = instance.$refs.parent
@@ -94,9 +97,9 @@ export default {
 
   mounted () {
     this.scroll = () => { stickyElementInViewport(this) }
-    window.addEventListener('scroll', this.scroll)
+    window.addEventListener('scroll', Throttle(this.scroll, 1))
     this.resize = () => { stickyElementInViewport(this) }
-    window.addEventListener('resize', this.resize)
+    window.addEventListener('resize', Throttle(this.resize, 10))
   },
 
   beforeDestroy () {
