@@ -11,7 +11,7 @@
           :style="{ left: `${left}px`, width: slidingRowWidth }">
 
           <div
-            v-for="(column, index) in columns"
+            v-for="(item, index) in collection"
             :key="index"
             :style="{ width: `${columnWidth}px` }"
             class="click-wrapper">
@@ -63,7 +63,7 @@ const handleSliderResize = (instance) => {
   const columnWidth = instance.$refs.rowContainer.clientWidth / instance.display
   instance.animate = false
   instance.columnWidth = columnWidth
-  instance.slidingRowWidth = columnWidth * instance.columns.length + 'px'
+  instance.slidingRowWidth = columnWidth * instance.columns + 'px'
   instance.setSliderPosition()
 
   if (instance.rangeInput) {
@@ -106,6 +106,11 @@ export default {
       required: false,
       default: false
     },
+    rows: {
+      type: Number,
+      required: false,
+      default: 1
+    },
     displayOptions: {
       type: Object,
       required: false,
@@ -119,27 +124,27 @@ export default {
     return {
       currentIndex: 0,
       range: 0,
-      resize: false,
-      animate: true,
-      left: 0,
-      columnWidth: 0,
       display: 4,
+      columnWidth: 0,
+      left: 0,
       slidingRowWidth: '100%',
-      inputWidth: false
+      inputWidth: false,
+      resize: false,
+      animate: true
     }
   },
 
   computed: {
     columns () {
-      return this.collection
+      return Math.ceil(this.collection.length / this.rows)
     },
     indices () {
-      return this.columns.length - this.display
+      return this.columns - this.display
     },
     breakpoints () {
       const options = {}
       for (const breakpoint in this.displayOptions) {
-        options[breakpoint] = this.displayOptions[breakpoint] > this.columns.length ? this.columns.length : this.displayOptions[breakpoint]
+        options[breakpoint] = this.displayOptions[breakpoint] > this.columns ? this.columns : this.displayOptions[breakpoint]
       }
       if (!options.hasOwnProperty('default')) { this.options.default = 3 }
       return options
@@ -160,8 +165,8 @@ export default {
   },
 
   mounted () {
-    if (this.columns.length < this.display) {
-      this.display = this.columns.length
+    if (this.columns < this.display) {
+      this.display = this.columns
     }
     handleSliderResize(this)
     this.resize = () => { handleSliderResize(this) }
@@ -179,7 +184,7 @@ export default {
     incrementIndex (val) {
       this.animate = true
       if (val === 'up') {
-        this.currentIndex = Math.min(this.currentIndex + 1, this.columns.length - this.display)
+        this.currentIndex = Math.min(this.currentIndex + 1, this.columns - this.display)
       } else {
         this.currentIndex = Math.max(this.currentIndex - 1, 0)
       }
@@ -201,7 +206,7 @@ export default {
 
 .slider-row {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   align-items: flex-start;
   box-sizing: border-box;
   position: relative;
@@ -217,6 +222,10 @@ export default {
 }
 
 // /////////////////////////////////////////////////////////////////////// Cards
+.click-wrapper {
+  padding: 1rem;
+}
+
 ::v-deep .project-card {
   display: block;
   padding-bottom: 0;
