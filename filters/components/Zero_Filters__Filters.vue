@@ -80,8 +80,12 @@ export default {
     },
     targetCategory () {
       const array = []
-      const category = this.siteContent.taxonomy.categories.find(cat => cat.slug === this.target.categorySlug)
-      category.tags.forEach(tag => array.push(tag.slug))
+      if (this.target) {
+        const category = this.siteContent.taxonomy.categories.find(cat => cat.slug === this.target.categorySlug)
+        if (category) {
+          category.tags.forEach(tag => array.push(tag.slug))
+        }
+      }
       return array
     },
     targetSelection () {
@@ -95,7 +99,7 @@ export default {
     },
     filtered () {
       let collection
-      if (this.target.categorySlug) {
+      if (this.targetCategory.length) {
         collection = filterProjects(
           this.primarySelection,
           filterProjects(this.targetSelection, this.projects, this.target.tagMatchType),
@@ -107,7 +111,6 @@ export default {
       if (collection.length === 0) { collection = false }
       const payload = { type: 'filtered', collection }
       this.setCollection(payload)
-      console.log(collection)
       return collection
     }
   },
