@@ -73,16 +73,17 @@ const handleSliderResize = (instance) => {
 
 const matchBreakpointDisplayAmount = (instance) => {
   let reset = true
-  for (const breakpoint in instance.breakpoints) {
+  for (const breakpoint in instance.visibleColumns) {
     if (window.matchMedia(`(max-width: ${breakpoint})`).matches) {
       if (reset) { reset = false }
-      if (instance.display !== instance.breakpoints[breakpoint]) {
-        instance.display = instance.breakpoints[breakpoint]
+      if (instance.display !== instance.visibleColumns[breakpoint]) {
+        instance.display = instance.visibleColumns[breakpoint]
       }
-    } else if (reset) {
-      if (instance.display !== instance.breakpoints.default) {
-        instance.display = instance.breakpoints.default
-      }
+    }
+  }
+  if (reset) {
+    if (instance.display !== instance.visibleColumns.default) {
+      instance.display = instance.visibleColumns.default
     }
   }
 }
@@ -142,11 +143,26 @@ export default {
       return this.columns - this.display
     },
     breakpoints () {
-      const options = {}
-      for (const breakpoint in this.displayOptions) {
-        options[breakpoint] = this.displayOptions[breakpoint] > this.columns ? this.columns : this.displayOptions[breakpoint]
+      const data = {}
+      if (this.displayOptions.hasOwnProperty('ultralarge')) { data['140.625rem'] = this.displayOptions.ultralarge }
+      if (this.displayOptions.hasOwnProperty('xlarge')) { data['90rem'] = this.displayOptions.xlarge }
+      if (this.displayOptions.hasOwnProperty('large')) { data['75rem'] = this.displayOptions.large }
+      if (this.displayOptions.hasOwnProperty('medium')) { data['64rem'] = this.displayOptions.medium }
+      if (this.displayOptions.hasOwnProperty('small')) { data['53.125rem'] = this.displayOptions.small }
+      if (this.displayOptions.hasOwnProperty('mini')) { data['40rem'] = this.displayOptions.mini }
+      if (this.displayOptions.hasOwnProperty('tiny')) { data['25.9375rem'] = this.displayOptions.tiny }
+      if (this.displayOptions.hasOwnProperty('default')) {
+        data.default = this.displayOptions.default
+      } else {
+        data.default = 3
       }
-      if (!options.hasOwnProperty('default')) { this.options.default = 3 }
+      return data
+    },
+    visibleColumns () {
+      const options = {}
+      for (const item in this.breakpoints) {
+        options[item] = this.breakpoints[item] > this.columns ? this.columns : this.breakpoints[item]
+      }
       return options
     },
     thumbPosition () {
@@ -197,11 +213,7 @@ export default {
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
 .slider {
-  // margin: 0 $containerSingleColumn;
   overflow: hidden;
-  @include medium {
-    margin: 0;
-  }
 }
 
 .slider-row {
@@ -221,38 +233,16 @@ export default {
   transition: left 300ms ease-in-out;
 }
 
-// /////////////////////////////////////////////////////////////////////// Cards
+// ////////////////////////////////////////////////////////////// Slider Content
 .click-wrapper {
   padding: 1rem;
 }
 
-::v-deep .project-card {
-  display: block;
-  padding-bottom: 0;
-  @include tiny {
-    padding: 0;
-    &:not(.list-view) {
-      .content {
-        margin-bottom: 0;
-      }
-    }
-  }
-}
-
 // ///////////////////////////////////////////////////////////// Slider Controls
-// .slider-controls {
-//   display: flex;
-//   justify-content: center;
-//   margin: 1.5rem auto;
-// }
-
 .slider-range-input {
   position: relative;
   display: block;
-  width: 40%;
-  @include tiny {
-    width: 75%;
-  }
+  width: 100%;
   &:after {
     content: '';
     position: absolute;
@@ -281,13 +271,10 @@ export default {
   width: 50px;
   background-color: #ffffff;
   border: 2px solid gray;
-  // border-radius: $borderRadius_Medium;
   z-index: -1;
   top: 50%;
   transform: translateY(-50%);
 }
-
-
 
 @mixin thumb() {
   height: 20px;
@@ -296,7 +283,6 @@ export default {
   border-radius: 0px;
   background-color: transparent;
   border: 2px solid transparent;
-  // border-radius: $borderRadius_Medium;
 }
 
 input {
@@ -307,6 +293,7 @@ input {
     margin: 10px 0;
     width: 100%;
     z-index: 10000;
+    background-color: transparent;
     &::-webkit-slider-runnable-track {
       width: 100%;
       height: 0px;
