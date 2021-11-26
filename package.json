@@ -1,6 +1,6 @@
 {
   "name": "@agency-undone/au-nuxt-module-zero",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Nuxt module that contains a variety of boilerplate components and functions",
   "homepage": "https://github.com/agency-undone/au-nuxt-module-zero/#readme",
   "bugs": "https://github.com/agency-undone/au-nuxt-module-zero/issues",
@@ -29,7 +29,7 @@
     "vue-uuid": "^2.0.2"
   },
   "engines": {
-    "node": ">=14.17.6"
+    "node": ">=16.13.0"
   },
   "publishConfig": {
     "access": "public"
