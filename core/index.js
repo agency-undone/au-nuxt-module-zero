@@ -145,12 +145,14 @@ const registerMiddleware = (instance, next) => {
 // ////////////////////////////////////////////////////////////// registerRoutes
 const registerRoutes = (instance) => {
   return new Promise((next) => {
+    const rootDir = instance.options.rootDir
+    const modules = instance.options.modules
     const redirects = instance.options.publicRuntimeConfig.redirects
     const sitemap = instance.options.sitemap
     // Add redirects to generate routes -> for static sites
     if (redirects && redirects.length > 0) {
       instance.options.generate.routes = () => {
-        return redirects.map(redirect => ({ route: redirect.from }))
+        return redirects.map(redirect => (redirect.from))
       }
       if (sitemap) {
         const exclude = redirects.map(redirect => (redirect.from))
@@ -159,6 +161,18 @@ const registerRoutes = (instance) => {
         } else {
           sitemap.exclude = exclude
         }
+      }
+    }
+    // Add blog post paths if using @nuxt/content module and .md files in @/content/blog
+    if (modules.includes('@nuxt/content') && Fs.existsSync(`${rootDir}/content/blog`)) {
+      const routesKey = instance.options.generate.routes
+      let routes = typeof routesKey === 'function' ? routesKey() : []
+      const paths = Fs.readdirSync(`${rootDir}/content/blog`)
+        .filter(file => file.includes('.md'))
+        .map(file => `/${file.split('.md')[0]}`)
+      if (paths.length > 0) {
+        routes = routes.concat(paths)
+        instance.options.generate.routes = () => { return routes }
       }
     }
     next()
