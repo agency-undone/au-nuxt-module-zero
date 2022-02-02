@@ -17,34 +17,39 @@ import Throttle from 'lodash/throttle'
 // =================================================================== Functions
 const stickyElementInViewport = (instance) => {
   const anchorElement = instance.$refs.parent
-  const anchor = getElementDocumentCoords(anchorElement)
-  const anchorWidth = `${Math.round(anchor.width)}px`
   const cutoffElement = document.getElementById(instance.cutoffid)
-  const cutoff = getElementDocumentCoords(cutoffElement)
 
-  const thresholdTop = window.pageYOffset + instance.thresholdoffset
-  const thresholdBottom = cutoff.top - instance.bottomoffset
+  if (anchorElement && cutoffElement) {
 
-  if (anchor.top < thresholdTop && thresholdBottom > thresholdTop) {
-    if (!instance.sticky) {
-      instance.sticky = true
+    const anchor = getElementDocumentCoords(anchorElement)
+    const anchorWidth = `${Math.round(anchor.width)}px`
+    const cutoff = getElementDocumentCoords(cutoffElement)
+
+    const thresholdTop = window.pageYOffset + instance.thresholdoffset
+    const thresholdBottom = cutoff.top - instance.bottomoffset
+
+    if (anchor.top < thresholdTop && thresholdBottom > thresholdTop) {
+      if (!instance.sticky) {
+        instance.sticky = true
+      }
+      if (instance.width !== anchorWidth) {
+        instance.width = anchorWidth
+      }
+      instance.transform = `translate(${anchor.left}px, ${instance.thresholdoffset}px)` // outside of if statement for resize
+    } else if (thresholdBottom < thresholdTop) {
+      if (instance.sticky) {
+        instance.sticky = false
+        instance.width = 'inherit'
+        instance.transform = `translate(0px, ${thresholdBottom - anchor.top}px)`
+      }
+    } else {
+      if (instance.sticky) {
+        instance.sticky = false
+        instance.width = 'inherit'
+        instance.transform = 'translate(0px, 0px)'
+      }
     }
-    if (instance.width !== anchorWidth) {
-      instance.width = anchorWidth
-    }
-    instance.transform = `translate(${anchor.left}px, ${instance.thresholdoffset}px)` // outside of if statement for resize
-  } else if (thresholdBottom < thresholdTop) {
-    if (instance.sticky) {
-      instance.sticky = false
-      instance.width = 'inherit'
-      instance.transform = `translate(0px, ${thresholdBottom - anchor.top}px)`
-    }
-  } else {
-    if (instance.sticky) {
-      instance.sticky = false
-      instance.width = 'inherit'
-      instance.transform = 'translate(0px, 0px)'
-    }
+
   }
 }
 

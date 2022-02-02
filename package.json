@@ -1,6 +1,6 @@
 {
   "name": "@agency-undone/au-nuxt-module-zero",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "Nuxt module that contains a variety of boilerplate components and functions",
   "homepage": "https://github.com/agency-undone/au-nuxt-module-zero/#readme",
   "bugs": "https://github.com/agency-undone/au-nuxt-module-zero/issues",
