@@ -8,19 +8,28 @@
 
     <div class="dropdown dropdown-button" @click.stop="toggleDropdown()">
 
-      <label>
+      <span id="rpp-selector-label">
         {{ label + (display === totalItems ? 'All' : display) }}
-      </label>
+      </span>
 
       <div class="dropdown dropdown-slot">
-
         <slot name="dropdown-icon"></slot>
-
       </div>
 
     </div>
 
-    <div class="dropdown dropdown-list">
+    <select class="select-native" aria-labelledby="rpp-selector-label">
+      <template v-for="option in options">
+        <option
+          v-if="!isNaN(option)"
+          :key="`select-option-${option}`"
+          :value="option">
+          {{ option === totalItems ? 'All' : option }}
+        </option>
+      </template>
+    </select>
+
+    <div class="dropdown dropdown-list" aria-hidden="true">
       <template v-for="option in options">
         <div
           v-if="!isNaN(option)"
@@ -173,6 +182,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 ::selection {
   color: none;
   background: none;
