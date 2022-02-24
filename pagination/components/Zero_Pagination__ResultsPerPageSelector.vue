@@ -4,7 +4,7 @@
     id="results-per-page-selector"
     v-click-outside="closeAllSelect"
     :class="['dropdown-root', 'focus-visible', { closed }]"
-    @keyup.enter="toggleDropdown()">
+    @keyup.enter="handleKeyboardInteraction()">
 
     <div class="dropdown dropdown-button" @click.stop="toggleDropdown()">
 
@@ -18,7 +18,10 @@
 
     </div>
 
-    <select class="select-native" aria-labelledby="rpp-selector-label">
+    <select
+      ref="nativeSelect"
+      v-model="selection"
+      class="select-native">
       <template v-for="option in options">
         <option
           v-if="!isNaN(option)"
@@ -87,7 +90,8 @@ export default {
 
   data () {
     return {
-      closed: true
+      closed: true,
+      selection: 10
     }
   },
 
@@ -115,6 +119,29 @@ export default {
         displayOptions.push(total)
       }
       return displayOptions
+    }
+  },
+
+  watch: {
+    selection (val) {
+      this.setRouteQuery({
+        key: 'results',
+        data: val
+      })
+      this.calculateTotalPages()
+      const total = this.totalPages
+      if (this.page > total) {
+        this.setRouteQuery({
+          key: 'page',
+          data: total
+        })
+      }
+      this.$emit('changed', {
+        event: 'optionSelected',
+        data: {
+          option: val
+        }
+      })
     }
   },
 
@@ -156,32 +183,23 @@ export default {
     optionSelected (val) {
       const selection = parseInt(val)
       if (!isNaN(selection)) {
-        this.setRouteQuery({
-          key: 'results',
-          data: selection
-        })
-        this.calculateTotalPages()
-        const total = this.totalPages
-        if (this.page > total) {
-          this.setRouteQuery({
-            key: 'page',
-            data: total
-          })
-        }
-        this.$emit('changed', {
-          event: 'optionSelected',
-          data: {
-            option: selection
-          }
-        })
-        this.toggleDropdown()
+        this.selection = selection
       }
+      this.toggleDropdown()
+    },
+    handleKeyboardInteraction () {
+      this.$refs.nativeSelect.focus()
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+
+.select-native {
+  position: absolute;
+  left: 20rem;
+}
 
 ::selection {
   color: none;
