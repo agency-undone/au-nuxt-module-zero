@@ -8,9 +8,9 @@
 
     <div class="dropdown dropdown-button" @click.stop="toggleDropdown()">
 
-      <span id="rpp-selector-label">
+      <label for="dropdown-native-select">
         {{ label + (display === totalItems ? 'All' : display) }}
-      </span>
+      </label>
 
       <div class="dropdown dropdown-slot">
         <slot name="dropdown-icon"></slot>
@@ -20,6 +20,7 @@
 
     <select
       ref="nativeSelect"
+      id="dropdown-native-select"
       v-model="selection"
       class="select-native">
       <template v-for="option in options">
