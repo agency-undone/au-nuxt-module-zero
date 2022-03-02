@@ -4,7 +4,7 @@
     id="results-per-page-selector"
     v-click-outside="closeAllSelect"
     :class="['dropdown-root', 'focus-visible', { closed }]"
-    @keyup.enter="handleKeyboardInteraction()">
+    @keyup="(e) => handleKeyboardInteraction(e)">
 
     <div class="dropdown dropdown-button" @click.stop="toggleDropdown()">
 
@@ -38,7 +38,6 @@
           v-if="!isNaN(option)"
           :key="`div-option-${option}`"
           :value="option"
-          :tabindex="closed ? -1 : 0"
           class="dropdown dropdown-item focus-visible"
           :class="{ highlighted: (display === option) }"
           @click="optionSelected(option)"
@@ -146,6 +145,7 @@ export default {
   },
 
   mounted () {
+    this.selection = this.display
     if (this.addParamOnLoad && this.display) {
       this.optionSelected(this.display)
     }
@@ -187,8 +187,10 @@ export default {
       }
       this.toggleDropdown()
     },
-    handleKeyboardInteraction () {
-      this.$refs.nativeSelect.focus()
+    handleKeyboardInteraction (e) {
+      if (e.key === 'Enter' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        this.$refs.nativeSelect.focus()
+      }
     }
   }
 }
@@ -198,7 +200,13 @@ export default {
 
 .select-native {
   position: absolute;
-  left: 20rem;
+  right: 0;
+  top: 0;
+  opacity: 0;
+  z-index: -10;
+  &:focus {
+    top: 100%;
+  }
 }
 
 ::selection {
