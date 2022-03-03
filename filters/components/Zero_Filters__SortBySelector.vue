@@ -12,7 +12,7 @@
       class="dropdown-button"
       @click.stop="toggleDropDown()">
 
-      <label for="dropdown-native-select">
+      <label for="sortby-native-select">
         {{ label }}
       </label>
 
@@ -28,7 +28,7 @@
 
     <select
       ref="nativeSelect"
-      id="dropdown-native-select"
+      id="sortby-native-select"
       v-model="selected"
       class="select-native">
       <template v-for="option in options">
@@ -128,7 +128,6 @@ export default {
       }
     },
     selected (val) {
-      console.log(val)
       const obj = this.options.find(item => item.label === val)
       if (obj.type === 'alphabetical') {
         this.sortAlphabetically(obj.key, obj.direction)
@@ -208,22 +207,6 @@ export default {
     optionSelected (obj) {
       this.selected = obj.label
       this.closeAllSelect()
-      // if (obj.type === 'alphabetical') {
-      //   this.sortAlphabetically(obj.key, obj.direction)
-      // } else if (obj.type === 'number') {
-      //   this.sortNumerically(obj.sortNumber, obj.direction)
-      // }
-      // this.setRouteQuery({
-      //   key: 'sort-by',
-      //   data: obj.slug
-      // })
-      // this.$emit('changed', {
-      //   event: 'optionSelected',
-      //   data: {
-      //     label: obj.label,
-      //     slug: obj.slug
-      //   }
-      // })
     },
     sortAlphabetically (key, mode) {
       if (this.collection.array) {
@@ -262,9 +245,9 @@ export default {
 
 .select-native {
   position: absolute;
-  right: 20rem;
+  right: 0rem;
   top: 0;
-  opacity: 0.5;
+  opacity: 0;
   z-index: -10;
   &:focus {
     top: 100%;
