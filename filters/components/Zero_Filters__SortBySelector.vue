@@ -5,7 +5,7 @@
     v-click-outside="closeAllSelect"
     :class="['dropdown-wrapper', 'focus-visible', { closed }]"
     :style="{ minWidth: `${maxLength * 10}px` }"
-    @keyup="(e) => handleKeyboardInteraction(e)">
+    @keyup="handleKeyboardInteraction($event)">
 
     <div
       ref="dropdownButton"

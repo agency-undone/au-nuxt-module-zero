@@ -4,7 +4,7 @@
     id="results-per-page-selector"
     v-click-outside="closeAllSelect"
     :class="['dropdown-root', 'focus-visible', { closed }]"
-    @keyup="(e) => handleKeyboardInteraction(e)">
+    @keyup="handleKeyboardInteraction($event)">
 
     <div class="dropdown dropdown-button" @click.stop="toggleDropdown()">
 
