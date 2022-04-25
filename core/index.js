@@ -191,9 +191,14 @@ const registerPlugins = (instance, next) => {
 const runHttps = (instance, next) => {
   if (process.env.NODE_ENV === 'development' && typeof instance.options.server === 'object') {
     const rootPath = instance.options.alias['@']
-    instance.options.server.https = {
-      key: Fs.readFileSync(Path.resolve(instance.options.rootDir, 'localhost_key.pem')),
-      cert: Fs.readFileSync(Path.resolve(instance.options.rootDir, 'localhost_cert.pem'))
+    try {
+      instance.options.server.https = {
+        key: Fs.readFileSync(Path.resolve(instance.options.rootDir, 'localhost_key.pem')),
+        cert: Fs.readFileSync(Path.resolve(instance.options.rootDir, 'localhost_cert.pem'))
+      }
+    } catch (e) {
+      console.log(e)
+      process.exit(0)
     }
   }
   if (next) { return next() }
