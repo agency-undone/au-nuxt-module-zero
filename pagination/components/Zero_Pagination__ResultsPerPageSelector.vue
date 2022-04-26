@@ -4,29 +4,41 @@
     id="results-per-page-selector"
     v-click-outside="closeAllSelect"
     :class="['dropdown-root', 'focus-visible', { closed }]"
-    @keyup.enter="toggleDropdown()">
+    @keyup="handleKeyboardInteraction($event)">
 
     <div class="dropdown dropdown-button" @click.stop="toggleDropdown()">
 
-      <label>
+      <label for="dropdown-native-select">
         {{ label + (display === totalItems ? 'All' : display) }}
       </label>
 
       <div class="dropdown dropdown-slot">
-
         <slot name="dropdown-icon"></slot>
-
       </div>
 
     </div>
 
-    <div class="dropdown dropdown-list">
+    <select
+      ref="nativeSelect"
+      id="dropdown-native-select"
+      v-model="selection"
+      class="select-native">
+      <template v-for="option in options">
+        <option
+          v-if="!isNaN(option)"
+          :key="`select-option-${option}`"
+          :value="option">
+          {{ option === totalItems ? 'All' : option }}
+        </option>
+      </template>
+    </select>
+
+    <div class="dropdown dropdown-list" aria-hidden="true">
       <template v-for="option in options">
         <div
           v-if="!isNaN(option)"
           :key="`div-option-${option}`"
           :value="option"
-          :tabindex="closed ? -1 : 0"
           class="dropdown dropdown-item focus-visible"
           :class="{ highlighted: (display === option) }"
           @click="optionSelected(option)"
@@ -78,7 +90,8 @@ export default {
 
   data () {
     return {
-      closed: true
+      closed: true,
+      selection: 10
     }
   },
 
@@ -109,7 +122,31 @@ export default {
     }
   },
 
+  watch: {
+    selection (val) {
+      this.setRouteQuery({
+        key: 'results',
+        data: val
+      })
+      this.calculateTotalPages()
+      const total = this.totalPages
+      if (this.page > total) {
+        this.setRouteQuery({
+          key: 'page',
+          data: total
+        })
+      }
+      this.$emit('changed', {
+        event: 'optionSelected',
+        data: {
+          option: val
+        }
+      })
+    }
+  },
+
   mounted () {
+    this.selection = this.display
     if (this.addParamOnLoad && this.display) {
       this.optionSelected(this.display)
     }
@@ -147,25 +184,13 @@ export default {
     optionSelected (val) {
       const selection = parseInt(val)
       if (!isNaN(selection)) {
-        this.setRouteQuery({
-          key: 'results',
-          data: selection
-        })
-        this.calculateTotalPages()
-        const total = this.totalPages
-        if (this.page > total) {
-          this.setRouteQuery({
-            key: 'page',
-            data: total
-          })
-        }
-        this.$emit('changed', {
-          event: 'optionSelected',
-          data: {
-            option: selection
-          }
-        })
-        this.toggleDropdown()
+        this.selection = selection
+      }
+      this.toggleDropdown()
+    },
+    handleKeyboardInteraction (e) {
+      if (e.key === 'Enter' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        this.$refs.nativeSelect.focus()
       }
     }
   }
@@ -173,6 +198,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.select-native {
+  position: absolute;
+  right: 0;
+  top: 0;
+  opacity: 0;
+  z-index: -10;
+  &:focus {
+    top: 100%;
+  }
+}
+
 ::selection {
   color: none;
   background: none;
